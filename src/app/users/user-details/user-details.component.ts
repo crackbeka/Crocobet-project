@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { User } from 'src/app/shared/models/user.model';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { UsersService } from 'src/app/shared/services/users.service';
 
 @Component({
   selector: 'app-user-details',
@@ -9,7 +11,7 @@ import { User } from 'src/app/shared/models/user.model';
 export class UserDetailsComponent implements OnInit {
   @Input() user!: User;
 
-  constructor() {}
+  constructor(private api: ApiService, private details: UsersService) {}
 
   ngOnInit(): void {}
 }
