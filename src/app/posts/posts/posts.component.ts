@@ -1,29 +1,37 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { PostsService } from '../posts.service';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
+import { UsersService } from 'src/app/shared/services/users.service';
+import { Post, PostsService } from '../posts.service';
 
 @Component({
   selector: 'app-posts',
   templateUrl: './posts.component.html',
   styleUrls: ['./posts.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PostsComponent implements OnInit, OnDestroy {
-  //
-  private subscription?: Subscription;
+export class PostsComponent implements OnInit {
+  posts$?: Observable<Post[]>;
 
-  //
-  posts$ = this.posts.posts$;
+  constructor(
+    private route: ActivatedRoute,
+    private posts: PostsService,
+    private users: UsersService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  //
-  constructor(private posts: PostsService) {}
-
-  //
   ngOnInit(): void {
-    this.subscription = this.posts.getPosts().subscribe();
-  }
+    const userId = this.route.snapshot.params.userId;
 
-  //
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+    if (userId) {
+      this.posts$ = this.users.getPosts(userId);
+    } else {
+      this.posts$ = this.posts.getPosts();
+    }
   }
 }

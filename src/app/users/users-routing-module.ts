@@ -9,6 +9,11 @@ const routes: Routes = [
     component: UsersComponent,
   },
   { path: ':userId', component: UserDetailsComponent },
+  {
+    path: ':userId/posts',
+    loadChildren: () =>
+      import('../posts/posts.module').then((m) => m.PostsModule),
+  },
 ];
 
 @NgModule({

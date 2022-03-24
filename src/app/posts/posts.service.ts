@@ -17,13 +17,16 @@ export interface Post {
   providedIn: 'root',
 })
 export class PostsService {
-  //
   posts$ = new BehaviorSubject<Post[]>([]);
 
-  //
   constructor(private api: ApiService, private users: UsersService) {}
 
-  //
+  /**
+   * Get all the posts and store them in subject
+   * Associate users with posts
+   *
+   * @returns
+   */
   getPosts(): Observable<Post[]> {
     return this.api.get<Post[]>('posts').pipe(
       map((posts) =>
@@ -36,7 +39,13 @@ export class PostsService {
     );
   }
 
-  //
+  /**
+   * Get individual post details
+   * Associate user to the post
+   *
+   * @param postId
+   * @returns
+   */
   getPost(postId: Post['id']): Observable<Post> {
     return this.api.get<Post>(`posts/${postId}`).pipe(
       startWith(this.posts$.value.find(({ id }) => id === postId) as Post),
@@ -47,7 +56,12 @@ export class PostsService {
     );
   }
 
-  //
+  /**
+   * Delete post and update posts subject
+   *
+   * @param postId
+   * @returns
+   */
   deletePost(postId: Post['id']): Observable<boolean> {
     return this.api
       .delete<boolean>(`posts/${postId}`)
